@@ -12,13 +12,13 @@ What this script does:
 4)Configures the new application
 5)Creates the deployment script
 6)Sets up the detection method based on Version Number
-7)Deploys the application to the Test Collection
+7)Deploys the application to the [collection name in sccm]
 
 =========================================================================
 
 HOW TO USE:
 
-Simply run the "Auto-Packager_Win" script in an elevated Powershell,
+Simply run the "Autopackager" script (from this repository) in an elevated Powershell,
 using the admin account that has admin access to the SCCM console.
 
 =========================================================================
@@ -27,7 +27,7 @@ NOTES:
 
 The AutoPackager assumes that you're using PSADT,
 and this computer has the SCCM Client installed.
-You do NOT have to have the SCCM Applications Directory on CIFS mapped on your computer.
+You do NOT have to have the SCCM Applications Directory on [server] mapped on your computer.
 
 The Set-up below is only required once.
 
@@ -38,7 +38,7 @@ SET-UP:
 1.
 Copy the following file into the source directory* of your PSADT folder:
 
--AutoPackager_Win.ps1
+-Autopackager (powershell script from this repository)
 
 (*The source directory is the same folder that your "Deploy-Application" powershell script is in).
 
@@ -47,7 +47,7 @@ In the source directory, delete the contents of your \Files folder.
 This script will download the new installer automatically.
 
 3.
-In the same directory as AutoPakager_Win.ps1, save a png that will act as the Software Center icon of the application. 
+In the same directory as Autopackager, save a png that will act as the Software Center icon of the application. 
 It MUST be LESS than 200x200px.  Name this image "icon.png".
 
 4.
@@ -68,7 +68,7 @@ You only have to change the "Path" name. The Parameters and filetype stay the sa
 This works the same way for .exe as for .msi.
 
 5.
-In the "AutoPackager_Win" script, change the variables at the top of the script.
+In the AutoPackager script, change the variables at the top of the script.
 
 -$newNameForInstaller = the generic installer name you changed in step 2. IT MUST MATCH.
 -$downloadURL = the button you click on the website to download the new installer.
@@ -86,5 +86,5 @@ to automatically find the Version number.
 In this case, you will never have to open this file again.
 
 6.
-Run the "Auto-Packager_Win" script in an elevated Powershell, using the admin account that has admin access to the SCCM console.
+Run the "AutoPackager" script in an elevated Powershell, using the admin account that has admin access to the SCCM console.
 

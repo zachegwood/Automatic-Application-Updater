@@ -1,0 +1,56 @@
+#Set dynamically from within the autopackager 
+appFromOtherScript
+pathFromOtherScript
+
+##Get version installed on PC
+$Installedversion = $null
+If (!$Installedversion) {
+    $Installedversion = Get-WmiObject win32_product | where {$_.name -like "*$AppName*"} | select version 
+    }
+
+If (!$Installedversion) {
+    $Installedversion = Get-ItemProperty HKLM:\Software\Wow6432Node\Microsoft\Windows\CurrentVersion\Uninstall\* | where {$_.Displayname -like "*$AppName*"} | select Displayversion 
+    }
+        
+##Get version number of downloaded installer        
+ if ($updateapppath -Like "*.msi")
+    {     
+            [IO.FileInfo] $MSI = "$Updateapppath"
+            
+            if (!(Test-Path $MSI.FullName)) {
+                throw "File '{0}' does not exist" -f $MSI.FullName
+            }
+ 
+            try {
+                $windowsInstaller = New-Object -com WindowsInstaller.Installer
+                $database = $windowsInstaller.GetType().InvokeMember(
+                    "OpenDatabase", "InvokeMethod", $Null,
+                    $windowsInstaller, @($MSI.FullName, 0)
+                )
+ 
+                $q = "SELECT Value FROM Property WHERE Property = 'ProductVersion'"
+                $View = $database.GetType().InvokeMember(
+                    "OpenView", "InvokeMethod", $Null, $database, ($q)
+                )
+ 
+                $View.GetType().InvokeMember("Execute", "InvokeMethod", $Null, $View, $Null)
+                $record = $View.GetType().InvokeMember( "Fetch", "InvokeMethod", $Null, $View, $Null )
+                $version = $record.GetType().InvokeMember( "StringData", "GetProperty", $Null, $record, 1 )
+ 
+                return $updateVersion
+            } catch {
+                throw "Failed to get MSI file version: {0}." -f $_
+            }
+    }
+if ($updateAppPath -Like "*.exe")
+    {
+    $updateVersion = (Get-ChildItem $Updateapppath).VersionInfo | select ProductVersion
+    }
+
+If ([version]$InstalledVersion -ige [version]$updateVersion)
+{
+Write-Host "installed"
+}
+else
+{
+}
